@@ -1,0 +1,12 @@
+---
+# tasks file for packages
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  become: yes
+
+- name: Install common packages
+  ansible.builtin.apt:
+    pkg: "{{ package_list }}"
+    state: present

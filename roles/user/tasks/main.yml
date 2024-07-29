@@ -1,0 +1,23 @@
+---
+# tasks file for user
+
+- name: Create hng user
+  ansible.builtin.user:
+    name: "{{ name }}"
+    create_home: yes
+
+- name: Set permissions for hng user's home directory
+  ansible.builtin.file:
+    path: /home/hng
+    mode: '0750'
+    owner: hng
+    group: hng
+  become: yes
+
+- name: Add hng user to sudoers
+  lineinfile:
+    path: "{{ path }}"
+    line: "{{ line }}"
+    validate: "{{ validate }}"
+    
+    

@@ -1,0 +1,10 @@
+---
+# vars file for postgres
+postgres_packages:
+  - postgresql
+  - postgresql-contrib
+  - libpq-dev
+
+dest: /var/secrets/pg_pw.txt
+user: hng
+database: sapphire

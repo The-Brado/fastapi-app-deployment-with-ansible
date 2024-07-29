@@ -1,0 +1,63 @@
+---
+# tasks file for postgres
+
+- name: Install PostgreSQL
+  ansible.builtin.apt:
+    pkg: "{{ postgres_packages }}"
+    state: present
+
+- name: Generate PostgreSQL password
+  command: openssl rand -base64 12
+  register: pg_password
+  
+
+
+- name: Ensure /var/secrets directory exists
+  ansible.builtin.file:
+    path: /var/secrets
+    state: directory
+    mode: '0750'
+    owner: hng
+    group: hng
+  become: yes
+
+
+- name: Save PostgreSQL credentials
+  ansible.builtin.copy:
+    content: "{{ pg_password.stdout }}"
+    dest: "{{ dest }}"
+    mode: '0600'
+
+
+- name: Update PostgreSQL authentication method
+  ansible.builtin.lineinfile:
+    path: /etc/postgresql/16/main/pg_hba.conf # Adjust the path if your PostgreSQL version is different
+    regexp: '^local\s+all\s+postgres\s+peer'
+    line: 'local   all   postgres   md5'
+  become: yes
+  notify: Restart PostgreSQL
+
+
+- name: Restart PostgreSQL
+  ansible.builtin.systemd:
+    name: postgresql
+    state: restarted
+  become: yes
+
+
+- name: Create PostgreSQL user
+  become: yes
+  postgresql_user:
+    name: "{{ user }}"
+    role_attr_flags: CREATEDB,SUPERUSER
+
+
+- name: Run PostgreSQL task
+  become: yes
+  become_user: postgres
+  postgresql_db:
+    name: "{{ database }}"
+    state: present
+
+
+

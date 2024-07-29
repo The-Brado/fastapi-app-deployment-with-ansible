@@ -1,0 +1,21 @@
+---
+# tasks file for nginx
+
+- name: Install Nginx
+  apt:
+    name: nginx=1.26.*
+    state: present
+
+- name: Configure Nginx
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+  notify: Reload Nginx
+
+- name: Enable Nginx site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  notify: Reload Nginx
+

@@ -1,0 +1,21 @@
+---
+# tasks file for log
+
+- name: Create log directory
+  file:
+    path: /var/log/stage_5b
+    state: directory
+    owner: hng
+    group: hng
+    mode: '0755'
+
+- name: Create log files
+  file:
+    path: "{{ item }}"
+    state: touch
+    owner: hng
+    group: hng
+    mode: '0644'
+  loop:
+    - /var/log/stage_5b/error.log
+    - /var/log/stage_5b/out.log

@@ -1,0 +1,15 @@
+---
+# handlers file for app_deploy
+
+- name: Restart FastAPI application
+  shell: |
+    pkill -f "python /opt/stage_5b/main.py"
+    source /opt/stage_5b/.venv/bin/activate
+    nohup uvicorn main:app --host 127.0.0.1 --port 3000 > /var/log/stage_5b/out.log 2> /var/log/stage_5b/error.log &
+  args:
+    executable: /bin/bash
+    chdir: /opt/stage_5b
+  become: yes
+  become_user: hng
+  environment:
+    PATH: "/opt/stage_5b/.venv/bin:{{ ansible_env.PATH }}"

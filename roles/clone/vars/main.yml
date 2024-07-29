@@ -1,0 +1,6 @@
+---
+# vars file for clone
+repo: "https://github.com/hngprojects/hng_boilerplate_python_fastapi_web.git"
+version: devops
+dest: /opt/stage_5b
+path: /opt/stage_5b

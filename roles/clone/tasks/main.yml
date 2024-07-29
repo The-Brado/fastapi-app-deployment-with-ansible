@@ -1,0 +1,34 @@
+---
+# tasks file for clone
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ path }}"
+    state: directory
+    mode: '0755'
+
+
+- name: Add repository to Git safe.directory
+  command: git config --global --add safe.directory /opt/stage_5b
+  become: yes
+
+
+- name: Check if repository already exists
+  stat:
+    path: /opt/stage_5b
+  register: repo_stat
+
+- name: Clone repository
+  ansible.builtin.git:
+    repo: "{{ repo }}"
+    version: "{{ version }}"
+    dest: "{{ dest }}"
+    single_branch: yes
+  become: yes
+
+- name: Set ownership of cloned repository
+  ansible.builtin.file:
+    path: "{{ path }}"
+    owner: hng
+    group: hng
+    recurse: yes
+
