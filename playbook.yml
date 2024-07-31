@@ -1,16 +1,16 @@
 ---
 # Play: To deploy a fast api application
 - name: Deploy and Configure FastAPI Boilerplate Application
-  hosts: all
+  hosts: hng
   become: yes
   become_method: sudo
   roles:
+    - log
     - user
     - packages
     - clone
     - postgres
     - app_deploy  # Add this line
     - nginx
-    - log
 
 
