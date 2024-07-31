@@ -1,6 +1,14 @@
 ---
 # handlers file for nginx
-- name: Reload Nginx
+
+- name: Start and enable Nginx service
   ansible.builtin.systemd:
     name: nginx
-    state: reloaded
+    state: started
+    enabled: yes
+
+
+- name: Restart Nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted

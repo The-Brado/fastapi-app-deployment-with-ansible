@@ -5,6 +5,7 @@
   ansible.builtin.user:
     name: "{{ name }}"
     create_home: yes
+  register: create_user_output 
 
 - name: Set permissions for hng user's home directory
   ansible.builtin.file:
@@ -13,11 +14,13 @@
     owner: hng
     group: hng
   become: yes
+  register: user_permissions_output 
 
 - name: Add hng user to sudoers
   lineinfile:
     path: "{{ path }}"
     line: "{{ line }}"
     validate: "{{ validate }}"
+  register: priviledge_action_output 
     
     

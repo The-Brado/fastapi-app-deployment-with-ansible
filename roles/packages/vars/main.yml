@@ -7,3 +7,4 @@ package_list:
   - python3-venv
   - python3-psycopg2
   - git
+  - acl

@@ -1,5 +1,17 @@
+- name: Ensure PostgreSQL is running
+  ansible.builtin.systemd:
+    name: postgresql
+    state: started
+    enabled: true
+  become: yes
+
 - name: Restart PostgreSQL
   ansible.builtin.systemd:
     name: postgresql
     state: restarted
   become: yes
+
+
+
+
+   

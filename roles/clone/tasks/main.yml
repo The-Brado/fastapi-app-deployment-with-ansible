@@ -5,11 +5,13 @@
     path: "{{ path }}"
     state: directory
     mode: '0755'
+  register: clone_directory_output
 
 
 - name: Add repository to Git safe.directory
   command: git config --global --add safe.directory /opt/stage_5b
   become: yes
+  register: gitrepo_status_output
 
 
 - name: Check if repository already exists
@@ -24,6 +26,7 @@
     dest: "{{ dest }}"
     single_branch: yes
   become: yes
+  register: clone_repo_output
 
 - name: Set ownership of cloned repository
   ansible.builtin.file:
@@ -31,4 +34,5 @@
     owner: hng
     group: hng
     recurse: yes
+  register: repo_owner_output
 

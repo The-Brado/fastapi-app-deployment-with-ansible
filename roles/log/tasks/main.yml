@@ -3,7 +3,7 @@
 
 - name: Create log directory
   file:
-    path: /var/log/stage_5b
+    path: "{{ log_path }}"
     state: directory
     owner: hng
     group: hng
@@ -17,5 +17,5 @@
     group: hng
     mode: '0644'
   loop:
-    - /var/log/stage_5b/error.log
-    - /var/log/stage_5b/out.log
+    - "{{ log_error_file }}"
+    - "{{ log_output_file }}"

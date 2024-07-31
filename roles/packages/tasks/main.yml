@@ -10,3 +10,4 @@
   ansible.builtin.apt:
     pkg: "{{ package_list }}"
     state: present
+  register: package_installed_output

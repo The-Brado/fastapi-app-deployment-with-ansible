@@ -6,5 +6,7 @@ postgres_packages:
   - libpq-dev
 
 dest: /var/secrets/pg_pw.txt
-user: hng
-database: sapphire
+db_user: hng
+db_host: localhost 
+db_port: 5432
+db_name: sapphire

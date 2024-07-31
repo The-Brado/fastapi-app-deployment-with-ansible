@@ -5,13 +5,13 @@
   ansible.builtin.apt:
     pkg: "{{ postgres_packages }}"
     state: present
+  register: install_postgres_output
 
 - name: Generate PostgreSQL password
   command: openssl rand -base64 12
-  register: pg_password
+  register: pg_password_output
+
   
-
-
 - name: Ensure /var/secrets directory exists
   ansible.builtin.file:
     path: /var/secrets
@@ -20,44 +20,95 @@
     owner: hng
     group: hng
   become: yes
+  register: secrets_dir_output
+
+
+
+- name: Set password for postgres user
+  set_fact:
+    pg_password: "{{ pg_password_output.stdout }}"
 
 
 - name: Save PostgreSQL credentials
   ansible.builtin.copy:
-    content: "{{ pg_password.stdout }}"
+    content: "{{ pg_password }}"
     dest: "{{ dest }}"
     mode: '0600'
+  become: yes
+  register: postgres_cred_output
+
 
 
 - name: Update PostgreSQL authentication method
   ansible.builtin.lineinfile:
     path: /etc/postgresql/16/main/pg_hba.conf # Adjust the path if your PostgreSQL version is different
     regexp: '^local\s+all\s+postgres\s+peer'
-    line: 'local   all   postgres   md5'
+    line: 'local   all   postgres   trust'
   become: yes
   notify: Restart PostgreSQL
+  register: postgres_auth_output
 
 
-- name: Restart PostgreSQL
-  ansible.builtin.systemd:
-    name: postgresql
-    state: restarted
+- name: Ensure listen_addresses is set to '*'
+  ansible.builtin.lineinfile:
+    path: /etc/postgresql/16/main/postgresql.conf
+    regexp: "^#listen_addresses = 'localhost'"
+    line: "listen_addresses = '*'"
+    state: present
+    backup: yes
+
+- name: Allow all connections in pg_hba.conf
+  ansible.builtin.lineinfile:
+    path: /etc/postgresql/16/main/pg_hba.conf
+    line: "host       all       all        0.0.0.0/0       trust"
+    insertafter: EOF
   become: yes
+  notify: Restart PostgreSQL 
+
+
+- name: Create PostgreSQL database
+  community.postgresql.postgresql_db:
+    name: "{{ db_name }}" 
+    state: present
+  become_user: postgres
+  register: postgres_db_output
 
 
 - name: Create PostgreSQL user
   become: yes
-  postgresql_user:
-    name: "{{ user }}"
-    role_attr_flags: CREATEDB,SUPERUSER
+  community.postgresql.postgresql_user:
+    name: "{{ db_user }}"
+  become_user: postgres  # Use the appropriate password variable
+  register: postgres_user_output
 
 
-- name: Run PostgreSQL task
-  become: yes
+- name: Grant all privileges on database
+  community.postgresql.postgresql_privs:
+    db: "{{ db_name }}"
+    role: "{{ db_user }}"
+    type: database
+    privs: ALL
   become_user: postgres
-  postgresql_db:
-    name: "{{ database }}"
-    state: present
+
+
+- name: Create dummy table
+  community.postgresql.postgresql_query:
+    db: "{{ db_name }}"
+    query: "CREATE TABLE IF NOT EXISTS dummy_table (id SERIAL PRIMARY KEY, name VARCHAR(50), age INT);"
+  become_user: postgres
+
+- name: Insert dummy data
+  community.postgresql.postgresql_query:
+    db: "{{ db_name }}"
+    query: "INSERT INTO dummy_table (name, age) VALUES ('John Doe', 30), ('Jane Doe', 25);"
+  become_user: postgres
+
+
+
+
+
+
+
 
 
 
