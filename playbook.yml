@@ -5,12 +5,12 @@
   become: yes
   become_method: sudo
   roles:
-    - log
     - user
     - packages
     - clone
     - postgres
     - app_deploy  # Add this line
     - nginx
+    - log
 
 
