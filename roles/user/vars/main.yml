@@ -1,6 +1,10 @@
 ---
 # vars file for user
 name: hng
-path: /etc/sudoers
+home_path: /home/hng
+sudoers: /etc/sudoers
 line: "hng ALL=(ALL) NOPASSWD: ALL"
 validate: "visudo -cf %s"
+log_path: /var/log/stage_5b
+log_output_file: /var/log/stage_5b/out.log
+log_error_file: /var/log/stage_5b/error.log

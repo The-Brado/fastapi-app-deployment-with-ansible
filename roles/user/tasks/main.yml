@@ -9,7 +9,7 @@
 
 - name: Set permissions for hng user's home directory
   ansible.builtin.file:
-    path: /home/hng
+    path: "{{ home_path }}"
     mode: '0750'
     owner: hng
     group: hng
@@ -18,9 +18,29 @@
 
 - name: Add hng user to sudoers
   lineinfile:
-    path: "{{ path }}"
+    path: "{{ sudoers }}"
     line: "{{ line }}"
     validate: "{{ validate }}"
   register: priviledge_action_output 
     
+
+- name: Create log directory
+  file:
+    path: "{{ log_path }}"
+    state: directory
+    owner: hng
+    group: hng
+    mode: '0755'
+
+- name: Create log files
+  file:
+    path: "{{ item }}"
+    state: touch
+    owner: hng
+    group: hng
+    mode: '0644'
+  loop:
+    - "{{ log_error_file }}"
+    - "{{ log_output_file }}"    
+
     

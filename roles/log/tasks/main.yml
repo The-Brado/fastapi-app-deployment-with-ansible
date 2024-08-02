@@ -1,21 +1,43 @@
 ---
 # tasks file for log
 
-- name: Create log directory
-  file:
-    path: "{{ log_path }}"
-    state: directory
-    owner: hng
-    group: hng
-    mode: '0755'
-
-- name: Create log files
-  file:
-    path: "{{ item }}"
-    state: touch
-    owner: hng
-    group: hng
-    mode: '0644'
-  loop:
-    - "{{ log_error_file }}"
-    - "{{ log_output_file }}"
+- name: Log all successful activities
+  ansible.builtin.copy:
+    content: |
+      "{{ (create_user_output.stdout | default(create_user_output)) | to_nice_yaml }}"
+      "{{ (user_permissions_output.stdout | default(user_permissions_output)) | to_nice_yaml }}"
+      "{{ (priviledge_action_output.stdout | default(priviledge_action_output)) | to_nice_yaml }}"
+      "{{ (package_installed_output.stdout | default(package_installed_output)) | to_nice_yaml }}"
+      "{{ (clone_directory_output.stdout | default(clone_directory_output)) | to_nice_yaml }}"
+      "{{ (gitrepo_status_output.stdout | default(gitrepo_status_output)) | to_nice_yaml }}"
+      "{{ (clone_repo_output.stdout | default(clone_repo_output)) | to_nice_yaml }}"
+      "{{ (repo_owner_output.stdout | default(repo_owner_output)) | to_nice_yaml }}"
+      "{{ (install_postgres_output.stdout | default(install_postgres_output)) | to_nice_yaml }}"
+      "{{ (secrets_dir_output.stdout | default(secrets_dir_output)) | to_nice_yaml }}"
+      "{{ (postgres_cred_output.stdout | default(postgres_cred_output)) | to_nice_yaml }}"
+      "{{ (postgres_db_output.stdout | default(postgres_db_output)) | to_nice_yaml }}"
+      "{{ (postgres_user_output.stdout | default(postgres_user_output)) | to_nice_yaml }}"
+      "{{ (venv_created.stdout | default(venv_created)) | to_nice_yaml }}"
+      "{{ (api_started.stdout | default(api_started)) | to_nice_yaml }}"
+      "{{ (install_nginx_output.stdout | default(install_nginx_output)) | to_nice_yaml }}"
+    dest: "{{ log_output_file }}"
+   
+- name: Log all errors 
+  ansible.builtin.copy:
+    content: |
+      "{{ (create_user_output.stderr | default(create_user_output)) | to_nice_yaml }}"
+      "{{ (user_permissions_output.stderr | default(user_permissions_output)) | to_nice_yaml }}"
+      "{{ (priviledge_action_output.stderr | default(priviledge_action_output)) | to_nice_yaml }}"
+      "{{ (package_installed_output.stderr | default(package_installed_output)) | to_nice_yaml }}"
+      "{{ (clone_directory_output.stderr | default(clone_directory_output)) | to_nice_yaml }}"
+      "{{ (gitrepo_status_output.stderr | default(gitrepo_status_output)) | to_nice_yaml }}"
+      "{{ (repo_owner_output.stderr | default(repo_owner_output)) | to_nice_yaml }}"
+      "{{ (install_postgres_output.stderr | default(install_postgres_output)) | to_nice_yaml }}"
+      "{{ (secrets_dir_output.stderr | default(secrets_dir_output)) | to_nice_yaml }}"
+      "{{ (postgres_cred_output.stderr | default(postgres_cred_output)) | to_nice_yaml }}"
+      "{{ (postgres_db_output.stderr | default(postgres_db_output)) | to_nice_yaml }}"
+      "{{ (postgres_user_output.stderr | default(postgres_user_output)) | to_nice_yaml }}"
+      "{{ (venv_created.stderr | default(venv_created)) | to_nice_yaml }}"
+      "{{ (api_started.stderr | default(api_started)) | to_nice_yaml }}"
+      "{{ (install_nginx_output.stderr | default(install_nginx_output)) | to_nice_yaml }}"
+    dest: "{{ log_error_file }}"

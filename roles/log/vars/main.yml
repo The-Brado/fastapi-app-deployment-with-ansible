@@ -1,3 +1,2 @@
-log_path: /var/log/stage_5b
 log_output_file: /var/log/stage_5b/out.log
 log_error_file: /var/log/stage_5b/error.log

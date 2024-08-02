@@ -7,6 +7,7 @@
     creates: /opt/stage_5b/.venv
   become: yes
   become_user: hng
+  register: venv_created
 
 - name: Install project dependencies
   ansible.builtin.pip:
@@ -33,6 +34,7 @@
   become_user: hng
   environment:
     PATH: "/opt/stage_5b/.venv/bin:{{ ansible_env.PATH }}"
+  register: api_started
 
 - name: Ensure FastAPI application is running
   wait_for:
