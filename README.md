@@ -24,7 +24,7 @@ Before you begin, ensure you have the following installed:
 
 
 ## Ansible Scripts
-For this project I made use of ansible roles to modularise my script and make it easy to debugg in the case of an error. My scripts includes `hosts.ini`, `playbook.yml`, `ansible.cfg`, and different role directory for each aspect of the application
+For this project I made use of ansible roles to modularise my script and make it easy to debugg in the case of an error. My scripts includes `hosts.ini`, `playbook.yml`, `ansible.cfg`, and different role directory for each aspect of the application. To pass environmental variables and the new configuration for ngix, I used jinja file to actualise thag
 
 ## Usage
 The command to run the ansible script is `ansible-playbook -i hosts.ini playbook.ynl`
