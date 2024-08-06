@@ -86,6 +86,7 @@
   community.postgresql.postgresql_privs:
     db: "{{ db_name }}"
     role: "{{ db_user }}"
+    password: "{{ pg_password }}"
     type: database
     privs: ALL
   become_user: postgres

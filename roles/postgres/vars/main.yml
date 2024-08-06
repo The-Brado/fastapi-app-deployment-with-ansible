@@ -9,4 +9,4 @@ dest: /var/secrets/pg_pw.txt
 db_user: hng
 db_host: localhost 
 db_port: 5432
-db_name: sapphire
+db_name: dbname
